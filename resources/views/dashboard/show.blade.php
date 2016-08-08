@@ -13,10 +13,17 @@
                             <h2>Pending</h2>
 
                             @if (count($pending) > 0)
+                                <ul>
+                                    @foreach ($pending as $image)
+                                        <li>{{ $image->title }}</li>
+                                    @endforeach
+                                </ul>
 
                             @else
                                 <p>No images pending.</p>
                             @endif
+
+                            <a href="{{ url('/colourisations/new') }}" class="btn btn-primary">New Colourisation</a>
                         </div>
 
                         <div class="col-xs-12 col-md-6">

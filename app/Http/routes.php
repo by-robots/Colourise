@@ -23,7 +23,20 @@ Route::get('/', function () {
 
 Route::auth();
 
+// ---------- The dashboard
 Route::get('dashboard', [
     'middleware' => 'auth',
-    'uses'       => 'DashboardController@show'
+    'uses'       => 'DashboardController@show',
+]);
+
+// ---------- Colourisations
+Route::get('colourisations/new', [
+    'middleware' => 'auth',
+    'uses'       => 'ColourisationController@create',
+]);
+
+Route::post('colourisations', [
+    'middleware' => 'auth',
+    'uses'       => 'ColourisationController@store',
+    'before'     => 'csrf',
 ]);
