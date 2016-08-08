@@ -1,6 +1,10 @@
 .env
 /node_modules
 /public/storage
+/storage/images/colourised/*
+/storage/images/original/*
 /vendor
 Homestead.json
 Homestead.yaml
+!/storage/images/colourised/.gitkeep
+!/storage/images/original/.gitkeep
