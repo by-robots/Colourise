@@ -11,14 +11,19 @@
 |
 */
 
+// If the user is logged in send them to the dashboard.
+// If the user is a guest send them to the login page.
 Route::get('/', function () {
     if (Auth::guest()) {
         return redirect('/login');
     }
 
-    return view('welcome');
+    return redirect('/dashboard');
 });
 
 Route::auth();
 
-Route::get('/home', 'HomeController@index');
+Route::get('dashboard', [
+    'middleware' => 'auth',
+    'uses'       => 'DashboardController@show'
+]);

@@ -21,4 +21,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * A user can have many colourisations.
+     */
+    public function colourisations()
+    {
+        return $this->hasMany('App\Models\Colourisation');
+    }
 }
