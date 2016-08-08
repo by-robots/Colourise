@@ -26,18 +26,23 @@ class ColourisationController extends Controller
      * @return \Illuminate\Http\Response
      *
      * TODO: Validate $input
+     * TODO: Ensure the colouried column is NULL
+     * TODO: Success message
      */
     public function store(\Illuminate\Http\Request $input)
     {
+        // Add the extras we need to make this work
         $input->merge([
             'user_id'  => \Auth::user()->id,
             'original' => $this->_upload($input),
         ]);
 
+        // Save data
         \App\Models\Colourisation::create($input->only([
             'user_id', 'original', 'title',
         ]));
 
+        // Away we go
         return redirect(url('/dashboard'));
     }
 
