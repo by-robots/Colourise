@@ -30,6 +30,15 @@
                             <h2>Complete</h2>
 
                             @if (count($complete) > 0)
+                                <ul>
+                                    @foreach ($complete as $image)
+                                        <li>
+                                            {{ $image->title }}
+                                            [<a href="/colourisations/{{ $image->id }}/original">Original</a>]
+                                            [<a href="/colourisations/{{ $image->id }}/colourised">Colourised</a>]
+                                        </li>
+                                    @endforeach
+                                </ul>
 
                             @else
                                 <p>No images completed.</p>

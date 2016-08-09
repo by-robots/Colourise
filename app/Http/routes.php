@@ -30,6 +30,7 @@ Route::get('dashboard', [
 ]);
 
 // ---------- Colourisations
+// Create a new one
 Route::get('colourisations/new', [
     'middleware' => 'auth',
     'uses'       => 'ColourisationController@create',
@@ -39,4 +40,10 @@ Route::post('colourisations', [
     'middleware' => 'auth',
     'uses'       => 'ColourisationController@store',
     'before'     => 'csrf',
+]);
+
+// Download one
+Route::get('colourisations/{imageID}/{type}', [
+    'middleware' => 'auth',
+    'uses'       => 'ColourisationController@download',
 ]);

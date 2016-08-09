@@ -47,6 +47,40 @@ class ColourisationController extends Controller
     }
 
     /**
+     * Download an image.
+     *
+     * @param string $type    "original" or "colourised"
+     * @param int    $imageID
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function download($imageID, $type)
+    {
+        // Get the record, check the user owns it
+        $image = \App\Models\Colourisation::findOrFail($imageID);
+        if ($image->user_id != \Auth::user()->id) {
+            // TODO: 404
+        }
+
+        // Build the path
+        switch ($type) {
+            case 'original':
+                $path = config('colourise.original-path') . '/' . \Auth::user()->id . '/' . $image->unprocessed;
+                break;
+
+            case 'colourised':
+                $path = config('colourise.colourised-path') . '/' . \Auth::user()->id . '/' . $image->colourised;
+                break;
+
+            default:
+                // TODO: 404
+        }
+
+        // Push the download
+        return response()->download($path);
+    }
+
+    /**
      * Upload a file.
      *
      * @param \Illuminate\Http\Request $input
