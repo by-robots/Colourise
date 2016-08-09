@@ -1,0 +1,3 @@
+[submodule "lib/colorize"]
+	path = lib/colorize
+	url = https://github.com/satoshiiizuka/siggraph2016_colorization.git
