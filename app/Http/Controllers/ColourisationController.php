@@ -33,13 +33,13 @@ class ColourisationController extends Controller
     {
         // Add the extras we need to make this work
         $input->merge([
-            'user_id'  => \Auth::user()->id,
-            'original' => $this->_upload($input),
+            'user_id'     => \Auth::user()->id,
+            'unprocessed' => $this->_upload($input),
         ]);
 
         // Save data
         \App\Models\Colourisation::create($input->only([
-            'user_id', 'original', 'title',
+            'user_id', 'unprocessed', 'title',
         ]));
 
         // Away we go
@@ -73,6 +73,6 @@ class ColourisationController extends Controller
         );
 
         // Return the path of the uploaded file
-        return config('colourise.original-path') . '/' . \Auth::user()->id . '/' . $filename;
+        return $filename;
     }
 }

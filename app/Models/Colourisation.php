@@ -8,7 +8,7 @@ class Colourisation extends \Illuminate\Database\Eloquent\Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'title', 'original', 'colourised',
+        'user_id', 'title', 'unprocessed', 'colourised',
     ];
 
     /**
