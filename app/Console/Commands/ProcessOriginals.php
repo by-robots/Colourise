@@ -69,7 +69,7 @@ class ProcessOriginals extends Command
             }
 
             // And process it
-            shell_exec('th ' . base_path() . '/lib/colorize/colorize.lua ' . $originalPath . '/' . $image->unprocessed . ' ' . $colourisedPath . '/' . $image->unprocessed);
+            shell_exec('cd ' . base_path() . '/lib/colorize && th ./colorize.lua ' . $originalPath . '/' . $image->unprocessed . ' ' . $colourisedPath . '/' . $image->unprocessed);
             $image->colourised = $image->unprocessed;
             $image->save();
 
