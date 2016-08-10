@@ -33,14 +33,18 @@ class ColourisationController extends Controller
     {
         // Add the extras we need to make this work
         $input->merge([
-            'user_id'     => \Auth::user()->id,
-            'unprocessed' => $this->_upload($input),
+            'user_id' => \Auth::user()->id,
         ]);
 
-        // Save data
-        \App\Models\Colourisation::create($input->only([
-            'user_id', 'unprocessed', 'title',
-        ]));
+        foreach ($input->file('files') as $file) {
+            // Save data for each file
+            \App\Models\Colourisation::create(
+                array_merge(
+                    $input->only(['user_id', 'title']),
+                    ['unprocessed' => $this->_upload($file)]
+                )
+            );
+        }
 
         // Away we go
         return redirect(url('/dashboard'));
@@ -83,28 +87,26 @@ class ColourisationController extends Controller
     /**
      * Upload a file.
      *
-     * @param \Illuminate\Http\Request $input
+     * @param \Illuminate\Http\UploadedFile $input
      *
      * @return string Full path to the uploaded file.
      */
-    private function _upload(\Illuminate\Http\Request $input)
+    private function _upload(\Illuminate\Http\UploadedFile $file)
     {
         // Make the user's folder if necessary
-        if (!file_exists(config('colourise.original-path') . '/' . \Auth::user()->id)) {
-            mkdir(config('colourise.original-path') . '/' . \Auth::user()->id, 0755, true);
+        $path = config('colourise.original-path') . '/' . \Auth::user()->id;
+        if (!file_exists($path)) {
+            mkdir($path, 0755, true);
         }
 
         // Get a unique filename
         do {
-            $filename = str_random(20) . '.' . $input->file('file')->guessExtension();
+            $filename = str_random(20) . '.' . $file->guessExtension();
 
-        } while (file_exists(config('colourise.original-path') . '/' . \Auth::user()->id . '/' . $filename));
+        } while (file_exists($path . '/' . $filename));
 
         // Put the file where it needs to go
-        $input->file('file')->move(
-            config('colourise.original-path') . '/' . \Auth::user()->id,
-            $filename
-        );
+        $file->move($path, $filename);
 
         // Return the path of the uploaded file
         return $filename;
