@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('colourise:process')
-                  ->everyTenMinutes();
+        // * * * * * php /srv/users/serverpilot/apps/colourise/artisan schedule:run >> /dev/null 2>&1
+        $schedule->command('colourise:process')->everyTenMinutes();
     }
 }
