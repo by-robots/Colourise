@@ -21,6 +21,8 @@ Set both `.sh` files to open automatically in Terminal.
 
 Install a local MySQL instance.
 
+Increase php.ini's file upload limits.
+
 Double click `start.sh` to begin the web server.
 
 Double click `process.sh` to process images.

@@ -8,7 +8,7 @@ class Colourisation extends \Illuminate\Database\Eloquent\Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'title', 'unprocessed', 'colourised',
+        'user_id', 'title', 'unprocessed', 'colourised', 'group_id',
     ];
 
     /**
@@ -24,5 +24,13 @@ class Colourisation extends \Illuminate\Database\Eloquent\Model
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    /**
+     * A colourisation belongs to one group (optionally).
+     */
+    public function group()
+    {
+        return $this->belongsTo('App\Models\Group');
     }
 }
