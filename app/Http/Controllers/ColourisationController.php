@@ -32,18 +32,20 @@ class ColourisationController extends Controller
     public function store(\Illuminate\Http\Request $input)
     {
         // Add the extras we need to make this work
-        $input->merge([
-            'user_id' => \Auth::user()->id,
-        ]);
+        $input->merge(['user_id' => \Auth::user()->id]);
 
-        foreach ($input->file('files') as $file) {
-            // Save data for each file
-            \App\Models\Colourisation::create(
-                array_merge(
-                    $input->only(['user_id', 'title']),
-                    ['unprocessed' => $this->_upload($file)]
-                )
-            );
+        // Handle uploads
+        switch (count($input->file('files'))) {
+            case 0:
+                // Error
+                break;
+
+            case 1:
+                $this->_singleColourisation($input);
+                break;
+
+            default:
+                $this->_multipleColourisations($input);
         }
 
         // Away we go
@@ -87,11 +89,12 @@ class ColourisationController extends Controller
     /**
      * Upload a file.
      *
-     * @param \Illuminate\Http\UploadedFile $input
+     * @param Illuminate\Http\UploadedFile $input
+     * @param string                       $filename
      *
      * @return string Full path to the uploaded file.
      */
-    private function _upload(\Illuminate\Http\UploadedFile $file)
+    private function _upload(\Illuminate\Http\UploadedFile $file, $filename = null)
     {
         // Make the user's folder if necessary
         $path = config('colourise.original-path') . '/' . \Auth::user()->id;
@@ -99,16 +102,61 @@ class ColourisationController extends Controller
             mkdir($path, 0755, true);
         }
 
-        // Get a unique filename
-        do {
-            $filename = str_random(20) . '.' . $file->guessExtension();
+        // Get a unique filename if one hasn't been specified
+        if (is_null($filename)) {
+            do {
+                $filename = str_random(20) . '.' . $file->guessExtension();
 
-        } while (file_exists($path . '/' . $filename));
+            } while (file_exists($path . '/' . $filename));
+        }
 
         // Put the file where it needs to go
         $file->move($path, $filename);
 
         // Return the path of the uploaded file
         return $filename;
+    }
+
+    /**
+     * Upload a single image.
+     *
+     * @param \Illuminate\Http\Request $input
+     *
+     * @return void
+     */
+    private function _singleColourisation(\Illuminate\Http\Request $input)
+    {
+        // Save data for each file
+        \App\Models\Colourisation::create(
+            array_merge(
+                $input->only(['user_id', 'title']),
+                ['unprocessed' => $this->_upload($input->file('files'))]
+            )
+        );
+    }
+
+    /**
+     * Upload more than one image. Automatically create and add all those images
+     * to a group.
+     *
+     * @param \Illuminate\Http\Request $input
+     *
+     * @return void
+     */
+    private function _multipleColourisations(\Illuminate\Http\Request $input)
+    {
+        $group = \App\Models\Group::create(['name' => $input->get('title')]);
+        foreach ($input->file('files') as $file) {
+            // Save data for each file
+            \App\Models\Colourisation::create(
+                array_merge(
+                    $input->only(['user_id', 'title']),
+                    [
+                        'unprocessed' => $this->_upload($file),
+                        'group_id'    => $group->id,
+                    ]
+                )
+            );
+        }
     }
 }
