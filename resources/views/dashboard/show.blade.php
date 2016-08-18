@@ -18,7 +18,7 @@
                             @if (count($pendingGroups) > 0)
                                 <ul>
                                     @foreach ($pendingGroups as $group)
-                                        <li>{{ $group->title }}</li>
+                                        <li>{{ $group->name }}</li>
                                     @endforeach
                                 </ul>
 
@@ -34,7 +34,7 @@
                                 <ul>
                                     @foreach ($completeGroups as $group)
                                         <li>
-                                            {{ $group->title }}
+                                            {{ $group->name }}
                                             [<a href="/groups/{{ $group->id }}">Download</a>]
                                         </li>
                                     @endforeach
