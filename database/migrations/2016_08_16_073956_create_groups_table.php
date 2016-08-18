@@ -13,7 +13,7 @@ class CreateGroupsTable extends Migration
     public function up()
     {
         // Create the groups table
-        Schema::create('groups', fucntion ($t) {
+        Schema::create('groups', function ($t) {
             $t->increments('id');
             $t->string('name');
             $t->string('archive')->nullable();
@@ -36,6 +36,10 @@ class CreateGroupsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('colourisations', function ($t) {
+            $t->dropForeign('colourisations_group_id_foreign');
+        });
+
+        Schema::drop('groups');
     }
 }
