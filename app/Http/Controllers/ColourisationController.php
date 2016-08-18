@@ -130,7 +130,9 @@ class ColourisationController extends Controller
         \App\Models\Colourisation::create(
             array_merge(
                 $input->only(['user_id', 'title']),
-                ['unprocessed' => $this->_upload($input->file('files'))]
+                [
+                    'unprocessed' => $this->_upload($input->file('files')[0]),
+                ]
             )
         );
     }
