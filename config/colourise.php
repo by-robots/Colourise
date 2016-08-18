@@ -21,4 +21,11 @@ return [
      * @var string
      */
     'colourised-path' => storage_path() . '/images/colourised',
+
+    /**
+     * The archive path.
+     *
+     * @var string
+     */
+    'archive-path' => storage_path() . '/archives',
 ];

@@ -2,10 +2,12 @@
 /lib/colorize/*.t7
 /node_modules
 /public/storage
+/storage/archive/*
 /storage/images/colourised/*
 /storage/images/original/*
 /vendor
 Homestead.json
 Homestead.yaml
+!/storage/archive/.gitkeep
 !/storage/images/colourised/.gitkeep
 !/storage/images/original/.gitkeep

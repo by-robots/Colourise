@@ -40,16 +40,30 @@ class ProcessOriginals extends Command
      */
     public function handle()
     {
-        $this->info('Let\'s begin...');
+        $this->info('Let\'s begin.');
+        $this->_processImages();
 
+        $this->info('Creating  group archives.');
+        $this->_createGroupArchives();
+
+        $this->info('All done. Anyone for coffee?');
+    }
+
+    /**
+     * Process unprocessed images.
+     *
+     * @return void
+     */
+    private function _processImages()
+    {
         // Get unprocessed images
         $unprocessed = \App\Models\Colourisation::whereNull('colourised')
             ->orderBy('created_at', 'asc')->get();
 
         // If we have none we can putour feet up
         if (count($unprocessed) < 1) {
-            $this->info('...nothing to do.');
-            exit;
+            $this->info('No images to process.');
+            return;
         }
 
         // Let's get this show on the road
@@ -59,7 +73,7 @@ class ProcessOriginals extends Command
 
             // Check the image exists or something will complain
             if (!file_exists($originalPath . '/' . $image->unprocessed)) {
-                $this->error('Image not found: #' . $image->id);
+                $this->error('Image not found: #' . $image->id . '.');
                 break;
             }
 
@@ -69,13 +83,62 @@ class ProcessOriginals extends Command
             }
 
             // And process it
-            shell_exec('cd ' . base_path() . '/lib/colorize && th ./colorize.lua ' . $originalPath . '/' . $image->unprocessed . ' ' . $colourisedPath . '/' . $image->unprocessed);
+            shell_exec('cd ' . base_path() . '/lib/colorize && th ./colorize.lua "' . $originalPath . '/' . $image->unprocessed . '" "' . $colourisedPath . '/' . $image->unprocessed . '"');
             $image->colourised = $image->unprocessed;
             $image->save();
 
             $this->info('Image #' . $image->id . ' processed.');
         }
+    }
 
-        $this->info('Anyone for coffee?');
+    /**
+     * Process groups and create their archives.
+     *
+     * @return void
+     */
+    private function _createGroupArchives()
+    {
+        // Get groups that haven't had their archives created yet
+        $groups = \App\Models\Group::whereNull('archive')->get();
+        if (count($groups) < 1) {
+            $this->info('No groups to process.');
+            return;
+        }
+
+        // Loop through, build archives
+        foreach ($groups as $group) {
+            $zipper = new \Chumper\Zipper\Zipper;
+
+            // Warn if some colourisations have failed
+            if ($group->colourisations()->whereNull('colourised')->count() > 0) {
+                $this->warning('Group #' . $group->id . ' (' . $group->name . ') has un-colourised images. These will be excluded.');
+            }
+
+            // Make the path for the archive
+            $path = config('colourise.archive-path') . '/' . $group->id;
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            // Generate a filename
+            do {
+                $filename = str_random(20) . '.zip';
+
+            } while (file_exists($path . '/' . $filename));
+
+            // Create the archive
+            $files     = $group->colourisations()->whereNotNull('colourised')->get();
+            $fileArray = [];
+            foreach ($files as $file) {
+                $fileArray[] = config('colourise.colourised-path') . '/' . $file->user_id . '/' . $file->colourised;
+            }
+
+            $zipper->make($path . '/' . $filename)->add($fileArray);
+
+            $group->archive = $filename;
+            $group->save();
+
+            $this->info('Archive created for Group #' . $group->id . ' (' . $group->name . ').');
+        }
     }
 }
