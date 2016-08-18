@@ -1,9 +1,4 @@
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Http\Requests;
-use Illuminate\Http\Request;
+<?php namespace App\Http\Controllers;
 
 class DashboardController extends Controller
 {
@@ -17,8 +12,12 @@ class DashboardController extends Controller
         return view(
             'dashboard.show',
             [
-                'pending'  => \Auth::user()->colourisations()->whereNull('colourised')->get(),
-                'complete' => \Auth::user()->colourisations()->whereNotNull('colourised')->get(),
+                'pendingGroups'   => \Auth::user()->incompleteGroups(),
+                'completeGroups'  => \Auth::user()->completeGroups(),
+                'pendingSingles'  => \Auth::user()->colourisations()
+                    ->whereNull('colourised')->whereNull('group_id')->get(),
+                'completeSingles' => \Auth::user()->colourisations()
+                    ->whereNotNull('colourised')->whereNull('group_id')->get(),
             ]
         );
     }

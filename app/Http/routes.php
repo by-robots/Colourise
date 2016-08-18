@@ -47,3 +47,10 @@ Route::get('colourisations/{imageID}/{type}', [
     'middleware' => 'auth',
     'uses'       => 'ColourisationController@download',
 ]);
+
+// ---------- Groups
+// Download a group
+Route::get('groups/{groupsID}', [
+    'middleware' => 'auth',
+    'uses'       => 'GroupController@download',
+]);
