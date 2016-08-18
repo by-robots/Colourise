@@ -104,10 +104,14 @@ class ColourisationController extends Controller
 
         // Get a unique filename if one hasn't been specified
         if (is_null($filename)) {
-            do {
-                $filename = str_random(20) . '.' . $file->guessExtension();
+            $basename = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName());
+            $filename = $basename . '.' . $file->getClientOriginalExtension();
+            $appendix = 1;
 
-            } while (file_exists($path . '/' . $filename));
+            while (file_exists($path . '/' . $filename)) {
+                $filename = $basename . '-' . $appendix . '.' . $file->getClientOriginalExtension();
+                $appendix++;
+            }
         }
 
         // Put the file where it needs to go
