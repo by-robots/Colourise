@@ -6,7 +6,7 @@
 # unlimited and increase the upload size as well.
 
 # Install Homebrew
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+#/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Install Composer
 cd ~
@@ -21,7 +21,7 @@ brew tap homebrew/versions
 brew tap homebrew/homebrew-php
 
 # Install Homebrew apps
-brew install git php70 php70-mcrypt mysql
+brew install php70 php70-mcrypt mysql
 
 # Install Torch
 git clone https://github.com/torch/distro.git ~/torch --recursive
@@ -33,7 +33,13 @@ source ~/.profile
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
+git submodule init
+
 php ~/composer.phar install
+
+# Install colourise
+cd lib/colorize
+./download_model.sh
 
 # Add execute privileges to the shell files
 chmod u+x start.sh
