@@ -29,12 +29,10 @@ cd ~/torch; bash install-deps;
 ./install.sh
 source ~/.profile
 
-# Clone Colourise
-cd ~/Desktop
-git clone git@danhub.pentangle.co.uk:DanG/Colourise.git
-
 # Install Colourise dependencies
-cd Colourise
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+
 php ~/composer.phar install
 
 # Add execute privileges to the shell files
