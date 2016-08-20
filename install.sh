@@ -29,17 +29,17 @@ cd ~/torch; bash install-deps;
 ./install.sh
 source ~/.profile
 
-# Install Colourise dependencies
+# Install Colourise
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 git submodule init
-
-php ~/composer.phar install
-
-# Install colourise
+git submodule update
 cd lib/colorize
 ./download_model.sh
+
+# Install Composer assets
+php ~/composer.phar install
 
 # Add execute privileges to the shell files
 chmod u+x start.sh

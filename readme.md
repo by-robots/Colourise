@@ -9,7 +9,7 @@ Takes black and white photos and colourises them. Magic.
 The Colorization dependency is included as a submodule. Torch is not and will
 need to be installed seperately.
 
-## Local Installation
+## Local Installation (MAC)
 1. Clone this repository
 2. `chmod u+x install.sh`
 3. `./install.sh`
@@ -23,6 +23,10 @@ memory_limit = -1
 post_max_size = 0
 upload_max_filesize = 8G
 ```
+
+5. Create MySQL database
+6. Link app to database
+7. Run Laravel migrations
 
 ## Local Execution
 - Double click `start.sh` to begin the web server.
